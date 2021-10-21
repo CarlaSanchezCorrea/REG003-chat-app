@@ -32,19 +32,14 @@ io.use(socketioJwt.authorize({
   handshake: true
 }));
   
-// io.on('connection', (socket) => {
-//   console.log('Nice BackEnd!', socket.decoded_token.name);
-  
-// });
-
 
 /* socket */
 //let currentUsers = 0;
 io.on('connection', (client) => { //on escucha eventos connection, 1 vez que hay respuesta del cb (socket), manejo esas asincronioas
-  console.log('Nuevo usuario conectado',  client.handshake.headers.authorization );
-  console.log('Nice BackEnd!', client.decoded_token.name);
+ // console.log('Nuevo usuario conectado',  client.handshake.headers.authorization );
+ console.log('Nice BackEnd!', client.decoded_token.name);
  // console.log(client, 'connected Kathy :3');
-
+  console.log('Conectado', client.id)
   //++currentUsers
   // the server gets it as a chat message event
   client.on('sendMessage', (messageInfo) => {
