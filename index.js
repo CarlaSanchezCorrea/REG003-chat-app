@@ -36,16 +36,39 @@ io.use(socketioJwt.authorize({
 /* socket */
 //let currentUsers = 0;
 io.on('connection', (client) => { //on escucha eventos connection, 1 vez que hay respuesta del cb (socket), manejo esas asincronioas
- // console.log('Nuevo usuario conectado',  client.handshake.headers.authorization );
- console.log('Nice BackEnd!', client.decoded_token.name);
- // console.log(client, 'connected Kathy :3');
-  console.log('Conectado', client.id)
+  //  console.log('Nice BackEnd!', client.decoded_token.name);
+  //   console.log('Conectado', client.id)
   //++currentUsers
+  //console.log(currentUsers)
+  client.emit('status', 'Connected');
+  const user = [];
+  for (let[id, client] of io.of('/').sockets){
+    user.push({
+      userID: id ,
+      username: client.decoded_token.name !== undefined ? client.decoded_token.name : 'Guest User: ' + id
+    })
+  }
+  console.log(user)
+  
+  client.on('users', (users) => {
+    console.log(users)
+    users.forEach(user => {
+      user.self = user.userID === client.id;
+      initReactiveProperties(user);
+    });
+    this.users = users.sort((a,b) => {
+      if(a.self) return -1;
+      if(b.self) return 1 ;
+      if(a.username < b.username) return -1;
+
+      return a.username > b.username ? 1 : 0;
+    })
+  })
+
   // the server gets it as a chat message event
   client.on('sendMessage', (messageInfo) => {
     console.log('message: ' + messageInfo.text + client.decoded_token.name); //message: Hola Kathy Angular - recibido desde el FE
     client.broadcast.emit('receiveMessage', messageInfo); // mandado del BE hacia el FE
-    // socket.emit ("testing Kathy")
   });
 
   client.on('disconnect', () => {
