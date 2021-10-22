@@ -52,6 +52,16 @@ const createUser = async (req, resp, next) => {
   }
 };
 
+// const getConnectedUsers = async (req, resp, next) => {
+  
+//   try {
+//     return resp.json('hola allí');
+//   } catch (error) {
+//     return next(error);
+//   }
+// }
+
 module.exports = {
-    createUser
+  createUser,
+  //getConnectedUsers
 }

@@ -9,6 +9,7 @@ const http = require('http');
 const server = http.createServer(app);
 const { portBE, portFE } = config;
 const socketioJwt = require('socketio-jwt');
+const socket = require('./sockets/socket');
 
 app.set('config', config);
 app.set('pkg', pkg);
@@ -32,14 +33,20 @@ io.use(socketioJwt.authorize({
   handshake: true
 }));
   
-
 /* socket */
-//let currentUsers = 0;
+let connectedUsers=[];
+
 io.on('connection', (client) => { //on escucha eventos connection, 1 vez que hay respuesta del cb (socket), manejo esas asincronioas
   //  console.log('Nice BackEnd!', client.decoded_token.name);
   //   console.log('Conectado', client.id)
+
+  connectedUsers.push(client.decoded_token.name);
+  console.log(connectedUsers);
+
+  client.emit("connectedUsers", connectedUsers)
   //++currentUsers
   //console.log(currentUsers)
+  
   client.emit('status', 'Connected');
   const user = [];
   for (let[id, client] of io.of('/').sockets){
@@ -71,10 +78,14 @@ io.on('connection', (client) => { //on escucha eventos connection, 1 vez que hay
     client.broadcast.emit('receiveMessage', messageInfo); // mandado del BE hacia el FE
   });
 
+<<<<<<< HEAD
   client.on('disconnect', () => {
     //--currentUsers
     console.log('Usuario desconectado', client.decoded_token.name);
   })
+=======
+  socket.disconnect(client, connectedUsers);
+>>>>>>> c643a2996795863d0344302cb6669aa0db335f60
 });
 
 // Registrar rutas

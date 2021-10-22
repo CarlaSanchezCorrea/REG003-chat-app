@@ -13,7 +13,7 @@ const middlewareCreateUser = async (req, resp, next) => {
         errorsArray[i].msg = "Please, complete this input : " + errorsArray[i].param
       }
       if(errorsArray[i].param === "email" && errorsArray[i].msg === "Invalid value" || errorsArray[i].param === "password" && errorsArray[i].msg === "Invalid value" || errorsArray[i].param === "name" && errorsArray[i].msg === "Invalid value"){
-        errorsArray[i].msg = "Please, check your " + errorsArray[i].param+ " and change for valid "+ errorsArray[i].param
+        errorsArray[i].msg = "Please, check your " + errorsArray[i].param + " and change for valid "+ errorsArray[i].param
       }
     }  
     
