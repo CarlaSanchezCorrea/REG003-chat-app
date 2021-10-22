@@ -43,14 +43,14 @@ io.on('connection', (client) => { //on escucha eventos connection, 1 vez que hay
   //++currentUsers
   // the server gets it as a chat message event
   client.on('sendMessage', (messageInfo) => {
-    console.log('message: ' + messageInfo.text); //message: Hola Kathy Angular - recibido desde el FE
+    console.log('message: ' + messageInfo.text + client.decoded_token.name); //message: Hola Kathy Angular - recibido desde el FE
     client.broadcast.emit('receiveMessage', messageInfo); // mandado del BE hacia el FE
     // socket.emit ("testing Kathy")
   });
 
   client.on('disconnect', () => {
     //--currentUsers
-    console.log('Usuario desconectado');
+    console.log('Usuario desconectado', client.decoded_token.name);
   })
 });
 
