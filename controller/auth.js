@@ -46,7 +46,6 @@ const signIn = async (req, resp, next) => {
         return resp.json({ token });
       }
     );
-    console.log('Bienvenido al chat principal')
   } catch (error) {
       return next(error);
   }
