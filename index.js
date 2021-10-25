@@ -53,7 +53,7 @@ io.on('connection', (client) => { //on escucha eventos connection, 1 vez que hay
   connectedUsers.push(client.decoded_token.name);
   console.log(connectedUsers);
 
-  client.emit("connectedUsers", connectedUsers)
+  client.broadcast.emit('connectedUsers', connectedUsers)
 
   //++currentUsers
   //console.log(currentUsers)
