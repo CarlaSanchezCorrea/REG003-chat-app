@@ -50,14 +50,54 @@ io.on('connection', (client) => { //on escucha eventos connection, 1 vez que hay
     console.log('Nice BackEnd!', client.decoded_token.name);
   //   console.log('Conectado', client.id)
 
-  connectedUsers.push(client.decoded_token.name);
-  console.log(connectedUsers);
+  // connectedUsers.push(client.decoded_token.name);
+  // console.log(connectedUsers);
 
-  client.broadcast.emit('connectedUsers', connectedUsers)
+  // client.broadcast.emit('connectedUsers', connectedUsers)
+
+  //Escucha el disconnect de los usuarios 
+  //client.emit('status', 'Connected');
+  const user = [];
+  for (let[id, client] of io.of('/').sockets){
+    user.push(
+      //userID: id ,
+      client.decoded_token.name !== undefined ? client.decoded_token.name : 'Guest User: ' + id
+    )
+  }
+  console.log(user)
+
+  client.broadcast.emit('connectedUsers', user)
+
 
   //++currentUsers
   //console.log(currentUsers)
   
+  client.on('sendMessage', (messageInfo) => {
+    console.log('message: ' + messageInfo.text + client.decoded_token.name); //message: Hola Kathy Angular - recibido desde el FE
+    client.broadcast.emit('receiveMessage', messageInfo); // mandado del BE hacia el FE
+  });
+
+  // the server gets it as a chat message event
+  client.on('disconnect', () => {
+    console.log('Usuario desconectado');
+  })
+});
+
+// Registrar rutas
+routes(app, (err) => {
+  if (err) {
+    throw err;
+  }
+
+  app.use(errorHandler);
+
+  server.listen(portBE, () => {
+    console.log(`App listening on port ${portBE} =D`);
+  });
+});
+
+
+
   // client.emit('status', 'Connected');
   // const user = [];
   // for (let[id, client] of io.of('/').sockets){
@@ -82,21 +122,3 @@ io.on('connection', (client) => { //on escucha eventos connection, 1 vez que hay
   //     return a.username > b.username ? 1 : 0;
   //   })
   // })
-
-  // the server gets it as a chat message event
-  socket.message(client, io);
-  socket.disconnect(client, connectedUsers);
-});
-
-// Registrar rutas
-routes(app, (err) => {
-  if (err) {
-    throw err;
-  }
-
-  app.use(errorHandler);
-
-  server.listen(portBE, () => {
-    console.log(`App listening on port ${portBE} =D`);
-  });
-});
